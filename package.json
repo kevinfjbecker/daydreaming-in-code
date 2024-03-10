@@ -1,0 +1,20 @@
+{
+  "name": "daydreaming-in-code",
+  "version": "1.0.0",
+  "description": "An art project in WebGL, Canvas and SVG with D3 and Three.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinfjbecker/daydreaming-in-code.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kevinfjbecker/daydreaming-in-code/issues"
+  },
+  "homepage": "https://github.com/kevinfjbecker/daydreaming-in-code#readme"
+}
