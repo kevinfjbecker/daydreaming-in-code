@@ -4,7 +4,8 @@
   "description": "An art project in WebGL, Canvas and SVG with D3 and Three.js",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/kevinfjbecker/daydreaming-in-code/issues"
   },
-  "homepage": "https://github.com/kevinfjbecker/daydreaming-in-code#readme"
+  "homepage": "https://github.com/kevinfjbecker/daydreaming-in-code#readme",
+  "dependencies": {
+    "vite": "^5.1.5"
+  }
 }
