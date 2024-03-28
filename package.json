@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An art project in WebGL, Canvas and SVG with D3 and Three.js",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build"
@@ -18,7 +19,10 @@
     "url": "https://github.com/kevinfjbecker/daydreaming-in-code/issues"
   },
   "homepage": "https://github.com/kevinfjbecker/daydreaming-in-code#readme",
+  "devDependencies": {
+    "vite": "^4.5.0"
+  },
   "dependencies": {
-    "vite": "^5.1.5"
+    "three": "^0.158.0"
   }
 }
