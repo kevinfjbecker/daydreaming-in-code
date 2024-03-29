@@ -1,11 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Day Dreaming</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
-    Hi.
+    <div class="layer-container" id="canvas-container">
+        <canvas id="2d-canvas"></canvas>
+    </div>
+    <div class="layer-container" id="webgl-container">
+        <canvas id="webgl-canvas"></canvas>
+    </div>
+    <div class="layer-container" id="svg-container">
+        <svg id="svg-canvas"></svg>
+    </div>
+    <script type="module" src="./script.js"></script>
 </body>
+
 </html>
