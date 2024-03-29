@@ -18,4 +18,10 @@ export default class PaperPlanes
         this.canvas.width = width
         this.canvas.height = height
     }
+
+    update()
+    {
+        // do stuff
+        // console.log(`Update paper planes`)
+    }
 }

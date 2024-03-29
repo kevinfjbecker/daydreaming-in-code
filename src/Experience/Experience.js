@@ -43,6 +43,11 @@ export default class Experience
             this.resize()
         })
 
+        // Time tick event
+        this.time.on('tick', () =>
+        {
+            this.update()
+        })
     }
 
     resize()
@@ -51,10 +56,12 @@ export default class Experience
         this.gliders.resize()
         this.paperPlanes.resize()
     }
-
+    
     update()
     {
-
+        this.rain.update()
+        this.gliders.update()
+        this.paperPlanes.update()
     }
 
     destroy()
