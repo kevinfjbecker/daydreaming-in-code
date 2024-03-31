@@ -4,9 +4,11 @@ export default class Rain
 {
     constructor(canvasElement, containerElement)
     {
+        // Experience
         this.experience = new Experience()
         this.debug = this.experience.debug
 
+        // Container
         this.canvas = canvasElement
         this.container = containerElement
         this.ctx = this.canvas.getContext('2d')
@@ -53,6 +55,7 @@ export default class Rain
                 })
         }
 
+        // Resize
         this.resize()
     }
 
