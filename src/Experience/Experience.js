@@ -1,6 +1,7 @@
-import Gliders from './Gliders/Gliders'
-import PaperPlanes from './PaperPlanes/PaperPlanes'
-import Rain from './Rain/Rain'
+import Debug from './Utilities/Debug.js'
+import Gliders from './Gliders/Gliders.js'
+import PaperPlanes from './PaperPlanes/PaperPlanes.js'
+import Rain from './Rain/Rain.js'
 import Sizes from './Utilities/Sizes.js'
 import Time from './Utilities/Time.js'
 
@@ -21,6 +22,7 @@ export default class Experience
         window.experience = this
 
         // Setup
+        this.debug = new Debug()
         this.sizes = new Sizes()
         this.time = new Time()
 
