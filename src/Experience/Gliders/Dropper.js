@@ -1,28 +1,63 @@
-import Dimensions from './Dimensions.js'
+import { glider } from './Dots.js'
+import { coordinateSetToArray } from './SetArrayUtility.js'
 import { rotate, translate } from './Transform.js'
 
 export default class Dropper {
 
-    constructor()
+    constructor(dimensions)
     {
-        this.dimensions = new Dimensions()
+        this.dimensions = dimensions
+        this.distributionFactor = 3
     }
 
     drop()
     {
         const dropSide =
-        dropLocations[Math.floor(Math.random() * dropLocations.length)]
+            dropLocations[Math.floor(Math.random() * dropLocations.length)]
         
         const angle = dropAngles[dropSide][Math.floor(Math.random() * 2)]
-        const dx = dropTranslations[dropSide][0]()
-        const dy = dropTranslations[dropSide][1]()
+        const dx = this.dropTranslations[dropSide][0]()
+        const dy = this.dropTranslations[dropSide][1]()
         
         const coords = coordinateSetToArray(glider)
-        .map((coordinates) => rotate(angle, coordinates))
-        .map((coordinates) => translate(dx, dy, coordinates))
+            .map((coordinates) => rotate(angle, coordinates))
+            .map((coordinates) => translate(dx, dy, coordinates))
         
         return new Set(coords.map((a) => a.toString()))
     }
+
+    distribution()
+    {
+        return (
+                new Array(this.distributionFactor)
+                    .fill(0)
+                    .map(() => Math.random())
+                    .reduce((a, b) => a + b) /
+                this.distributionFactor
+            ) *
+            2 -
+            1
+    }
+
+    dropTranslations = {
+        N: [
+            () => Math.floor(this.distribution() * this.dimensions.widthBound),
+            () => -(this.dimensions.heightBound + this.dimensions.boardMargin)
+        ],
+        E: [
+            () => this.dimensions.widthBound + this.dimensions.boardMargin,
+            () => Math.floor(this.distribution() * this.dimensions.heightBound)
+        ],
+        S: [
+            () => Math.floor(this.distribution() * this.dimensions.widthBound),
+            () => this.dimensions.heightBound + this.dimensions.boardMargin
+        ],
+        W: [
+            () => -(this.dimensions.widthBound + this.dimensions.boardMargin),
+            () => Math.floor(this.distribution() * this.dimensions.heightBound)
+        ]
+    }
+
 }
 
 const dropLocations = ['N', 'E', 'S', 'W']
@@ -34,21 +69,3 @@ const dropAngles = {
     W: [0, 90]
 }
 
-const dropTranslations = {
-    N: [
-        () => Math.floor(dist() * widthBound),
-        () => -(heightBound + boardMargin)
-    ],
-    E: [
-        () => widthBound + boardMargin,
-        () => Math.floor(dist() * heightBound)
-    ],
-    S: [
-        () => Math.floor(dist() * widthBound),
-        () => heightBound + boardMargin
-    ],
-    W: [
-        () => -(widthBound + boardMargin),
-        () => Math.floor(dist() * heightBound)
-    ]
-}

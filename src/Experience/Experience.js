@@ -61,7 +61,7 @@ export default class Experience
     
     update()
     {
-        // this.rain.update()
+        this.rain.update()
         this.gliders.update()
         this.paperPlanes.update()
     }

@@ -1,6 +1,10 @@
 import * as d3 from 'd3'
+import { combine } from './SetArrayUtility.js'
 import Dropper from './Dropper.js'
 import Experience from '../Experience.js'
+import Dimensions from './Dimensions.js'
+import { glider } from './Dots.js'
+import { tick } from './GameOfLife.js'
 
 export default class Gliders
 {
@@ -11,21 +15,30 @@ export default class Gliders
         this.debug = this.experience.debug
 
         // Components
-        this.dropper = new Dropper()
+        this.dimensions = new Dimensions()
+        this.dropper = new Dropper(this.dimensions)
 
         // Container
-        this.svg = d3.select(svgElement)
         this.container = containerElement
 
+        // SVG
+        this.svg = d3.select(svgElement)
+        this.grid = this.svg.append('g')
+
         // dots
-        this.circleRadius = 8
-        this.circleMargin = 2
-        this.squareSide = (this.circleRadius + this.circleMargin) * 2
-        this.glider = new Set(['-1,-1', '0,-1', '1,-1', '1,0', '0,1']) // https://conwaylife.com/wiki/Glider
+        this.fill = '#fff'
+        this.stroke = '#4f4f4f'
+        this.dimensions.circleRadius = 8
+        this.dimensions.circleMargin = 2
+        
+        this.alive = []
+        this.gliderCount = 4
 
         // throttling for update
         this.lastCall = 0 
-        this.delay = 1000
+        this.delay = 200
+
+        this.resize() // calculate initial dimensions
 
         // Debug
         if(this.debug.active)
@@ -33,41 +46,67 @@ export default class Gliders
             this.debugFolder = this.debug.ui.addFolder('gliders')
 
             this.debugFolder
+                .addColor(this, 'fill')
+
+            this.debugFolder
+                .addColor(this, 'stroke')
+
+            this.debugFolder
                 .add(this, 'delay')
                 .min(0)
                 .max(1000)
                 .step(5)
+
+            this.debugFolder
+                .add(this, 'gliderCount')
+                .min(0)
+                .max(50)
+                .step(1)
+
+            this.debugFolder
+                .add(this.dropper, 'distributionFactor')
+                .min(1)
+                .max(5)
+                .step(1)
+
+            this.debugFolder
+                .add(this.dimensions, 'boardMargin')
+                .min(-3)
+                .max(3)
+                .step(1)
+                .onChange(() => this.resize())
+
+            this.debugFolder
+                .add(this.dimensions, 'circleRadius')
+                .min(2)
+                .max(24)
+                .step(1)
+                .onChange(() => this.resize())
+                
+                this.debugFolder
+                .add(this.dimensions, 'circleMargin')
+                .min(0)
+                .max(4)
+                .step(1)
+                .onChange(() => this.resize())
         }
-
-        // Resize
-        this.resize()
-
-        // Grid
-        this.width
-        this.height
-        this.grid = this.svg
-            .append('g')
-            .attr('transform', `translate(${this.width / 2}, ${this.height / 2})`)
-        
-        this.grid
-            .selectAll('circle')
-            .data([...this.glider].map((d) => d.split(',')))
-            .join('circle') // todo
-                .attr('cx', (d) => d[0] * this.squareSide)
-                .attr('cy', (d) => d[1] * this.squareSide)
-                .attr('r', this.circleRadius)
-                .style('fill', 'white')
     }
 
     resize()
     {
         const parentStyle = window.getComputedStyle(this.container)
 
-        this.width = parseInt(parentStyle.getPropertyValue('width'))
-        this.height = parseInt(parentStyle.getPropertyValue('height'))
+        this.dimensions.width = parseInt(parentStyle.getPropertyValue('width'))
+        this.dimensions.height = parseInt(parentStyle.getPropertyValue('height'))
 
-        this.svg.attr('width', this.width)
-        this.svg.attr('height', this.height)
+        this.dimensions.recalculate()
+
+        this.svg.attr('width', this.dimensions.width)
+        this.svg.attr('height', this.dimensions.height)
+
+        this.grid.attr('transform',
+            `translate(${this.dimensions.width / 2}, ${this.dimensions.height / 2})`
+        )
     }
 
     update()
@@ -81,9 +120,37 @@ export default class Gliders
         this.lastCall = now
 
         // do stuff
-        // console.log(`Update gliders`)
+        this.alive = this.next(this.alive)
+        this.updateWorld()
+    }
 
-        // console.log([...this.glider].map((d) => d.split(',')))
+    updateWorld()
+    {
+        this.grid
+            .selectAll('circle')
+            .data([...combine(this.alive)].map((d) => d.split(',')))
+            .join(
+                enter => enter.append('circle')
+                    .attr('cx', (d) => d[0] * this.dimensions.squareSide)
+                    .attr('cy', (d) => d[1] * this.dimensions.squareSide)
+                    .attr('r', this.dimensions.circleRadius)
+                    .style('fill', this.fill)
+                    .style('stroke', this.stroke),
+                    update => update
+                    .attr('cx', (d) => d[0] * this.dimensions.squareSide)
+                    .attr('cy', (d) => d[1] * this.dimensions.squareSide)
+                    .attr('r', this.dimensions.circleRadius)
+                    .style('fill', this.fill)
+                    .style('stroke', this.stroke),
+                exit => exit
+                    .remove()
+            )
+    }
+
+    next(arrayOfGames)
+    {
+        if (arrayOfGames.length < this.gliderCount) arrayOfGames.push(this.dropper.drop());
+        return arrayOfGames.map(tick).filter((ag) => this.dimensions.inBounds(ag));
     }
 
 }

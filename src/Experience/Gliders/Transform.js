@@ -18,9 +18,9 @@ export const rotate = (degrees, [x, y]) =>
 
 /**
  * 
- * @param {*} δx 
- * @param {*} δy 
- * @param {*} coordinates 
+ * @param {integer} δx 
+ * @param {integer} δy 
+ * @param {[integer, integer]} coordinates 
  * @returns 
  */
 export const translate = (δx, δy, [x, y]) => [x + δx, y + δy]
